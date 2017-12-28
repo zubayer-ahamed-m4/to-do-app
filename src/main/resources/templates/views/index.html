@@ -32,7 +32,7 @@
 					<div class="panel-heading">
 						<h4 style="text-align: center;" th:text="#{todoapp.todoBox}">To Do</h4>
 					</div>
-					<div class="panel-body" style="background: #e2e4e6">
+					<div id="todoBody" ondrop="drop(event)" ondragover="allowDrop(event)" class="panel-body" style="background: #e2e4e6">
 						<!-- add item button -->
 						<span th:if="${update != 'true'}">
 							<div class="col-md-12" style="margin-bottom: 10px;">
@@ -42,49 +42,46 @@
 							</div>
 						</span>
 						<!-- add item input field -->
-						<div id="itemAddInputField" class="col-md-12" style="margin-bottom: 10px; display:none;">
+						<div id="itemAddInputField" class="col-md-12" style="margin-bottom: 10px; display: none;">
 							<div class="row">
 								<form th:action="@{/addTodoItem}" th:object="${todoItem}" method="post">
 									<span th:if="${#fields.hasErrors('des')}" th:errors="*{des}" class="text-danger">adfasd</span>
 									<textarea required="required" th:field="*{des}" rows="5" cols="" class="form-control"></textarea>
-									<button type="submit" class="btn btn-success btn-sm" style="margin-top: 10px;"><i class="fa fa-save"></i> Save </button>
+									<button type="submit" class="btn btn-success btn-sm" style="margin-top: 10px;">
+										<i class="fa fa-save"></i> Save
+									</button>
 									<a onClick="hideAddButton()" href="#" class="btn btn-danger btn-sm" style="margin-top: 10px;"><i class="fa fa-times"></i></a>
 								</form>
 							</div>
-						</div>
+						</div>						
 						<!-- display items loop -->
-						<div id="itemMainBox" th:each="item,num : ${todoItems}" class="col-md-12" style="margin-bottom: 10px;">
+						<div draggable="true" ondragstart="drag(event)" th:each="item,num : ${todoItems}" th:id="${item.id}" class="col-md-12" style="margin-bottom: 10px;">
 							<div class="row">
 								<!-- if it is not for update -->
 								<span th:if="${update != 'true'}">
 									<div class="col-md-12 item-box" style="background: #fff; padding: 10px; border-radius: 5px;">
-										<a title="Move to In Progress" id="editLinkButton" th:href="@{/moveToInProgress/} + ${item.id}" class="pull-right" style="margin-left: 10px;"><i class="fa fa-arrow-right"></i></a>
-										<a title="Update" id="editLinkButton" th:href="@{/updateTodoItem/} + ${item.id}" class="pull-right" style="margin-left: 10px;"><i class="fa fa-edit"></i></a>
+										<a title="Move to In Progress" id="editLinkButton" th:href="@{/moveToInProgress/} + ${item.id}" class="pull-right" style="margin-left: 10px;"><i class="fa fa-arrow-right"></i></a> <a title="Update" id="editLinkButton" th:href="@{/updateTodoItem/} + ${item.id}" class="pull-right" style="margin-left: 10px;"><i class="fa fa-edit"></i></a>
 										<p style="margin: 0;" th:text="${{item.des}}"></p>
 									</div>
-								</span> 
+								</span>
 								<!-- if it is update -->
-								<span th:if="${update == 'true'}"> 
-									<!-- updatable item box -->
-									<span th:if="${todoItemById.id == item.id}">
+								<span th:if="${update == 'true'}"> <!-- updatable item box --> <span th:if="${todoItemById.id == item.id}">
 										<form th:action="@{/updateItem}" method="post" th:object="${todoItemById}">
 											<div class="col-md-12" style="background: #fff; padding: 10px; border-radius: 5px;">
-												<input type="hidden" th:field="*{id}"/>
-												<span style="padding-bottom: 5px;" th:if="${#fields.hasErrors('des')}" th:errors="*{des}" class="text-danger">adfasd</span>
+												<input type="hidden" th:field="*{id}" /> <span style="padding-bottom: 5px;" th:if="${#fields.hasErrors('des')}" th:errors="*{des}" class="text-danger">adfasd</span>
 												<textarea rows="5" class="form-control" th:field="*{des}"></textarea>
-												<button type="submit" class="btn btn-warning btn-sm" style="margin-top: 10px;"><i class="fa fa-pencil-square-o"></i> Update</button>
+												<button type="submit" class="btn btn-warning btn-sm" style="margin-top: 10px;">
+													<i class="fa fa-pencil-square-o"></i> Update
+												</button>
 												<a th:href="@{/}" class="btn btn-danger btn-sm" style="margin-top: 10px;"><i class="fa fa-times"></i></a>
 											</div>
 										</form>
-									</span> 
-									<!-- non updatable item -->
-									<span th:if="${todoItemById.id != item.id}">
+								</span> <!-- non updatable item --> <span th:if="${todoItemById.id != item.id}">
 										<div class="col-md-12 item-box" style="background: #fff; padding: 10px; border-radius: 5px;">
-											<a title="Move to In Progress" id="editLinkButton" th:href="@{/moveToInProgress/} + ${item.id}" class="pull-right" style="margin-left: 10px;"><i class="fa fa-arrow-right"></i></a>
-											<a title="Update" id="editLinkButton" th:href="@{/updateTodoItem/} + ${item.id}" class="pull-right" style="margin-left: 10px;"><i class="fa fa-edit"></i></a>
+											<a title="Move to In Progress" id="editLinkButton" th:href="@{/moveToInProgress/} + ${item.id}" class="pull-right" style="margin-left: 10px;"><i class="fa fa-arrow-right"></i></a> <a title="Update" id="editLinkButton" th:href="@{/updateTodoItem/} + ${item.id}" class="pull-right" style="margin-left: 10px;"><i class="fa fa-edit"></i></a>
 											<p style="margin: 0;" th:text="${{item.des}}"></p>
 										</div>
-									</span>
+								</span>
 								</span>
 							</div>
 						</div>
@@ -97,13 +94,12 @@
 					<div class="panel-heading">
 						<h4 style="text-align: center;" th:text="#{todoapp.inProgressBox}">In Progress</h4>
 					</div>
-					<div class="panel-body" style="background: #e2e4e6">
+					<div id="inProgressBody" ondrop="drop(event)" ondragover="allowDrop(event)" class="panel-body" style="background: #e2e4e6">
 						<!-- loop -->
-						<div id="itemMainBox" th:each="item,num : ${inProgressItems}" class="col-md-12" style="margin-bottom: 10px;">
+						<div draggable="true" ondragstart="drag(event)" th:each="item,num : ${inProgressItems}" th:id="${item.id}" class="col-md-12" style="margin-bottom: 10px;">
 							<div class="row">
 								<div class="col-md-12 item-box" style="background: #fff; padding: 10px; border-radius: 5px;">
-									<a title="Move to Done" id="editLinkButton" th:href="@{/moveToDone/} + ${item.id}" class="pull-right" style="margin-left: 10px;"><i class="fa fa-arrow-right"></i></a>
-									<a title="Move to ToDo" id="editLinkButton" th:href="@{/moveToTodo/} + ${item.id}" class="pull-right" style="margin-left: 10px;"><i class="fa fa-arrow-left"></i></a>
+									<a title="Move to Done" id="editLinkButton" th:href="@{/moveToDone/} + ${item.id}" class="pull-right" style="margin-left: 10px;"><i class="fa fa-arrow-right"></i></a> <a title="Move to ToDo" id="editLinkButton" th:href="@{/moveToTodo/} + ${item.id}" class="pull-right" style="margin-left: 10px;"><i class="fa fa-arrow-left"></i></a>
 									<p style="margin: 0;" th:text="${{item.des}}"></p>
 								</div>
 							</div>
@@ -117,13 +113,12 @@
 					<div class="panel-heading">
 						<h4 style="text-align: center;" th:text="#{todoapp.doneBox}">Done</h4>
 					</div>
-					<div class="panel-body" style="background: #e2e4e6">
+					<div id="doneBody" ondrop="drop(event)" ondragover="allowDrop(event)" class="panel-body" style="background: #e2e4e6">
 						<!-- loop -->
-						<div id="itemMainBox" th:each="item,num : ${doneItems}" class="col-md-12" style="margin-bottom: 10px;">
+						<div draggable="true" ondragstart="drag(event)" th:each="item,num : ${doneItems}" th:id="${item.id}" class="col-md-12" style="margin-bottom: 10px;">
 							<div class="row">
 								<div class="col-md-12 item-box" style="background: #fff; padding: 10px; border-radius: 5px;">
-									<a onClick="return confirm('Are you want to delete this item?')" title="Delete" id="editLinkButton" th:href="@{/deleteItem/} + ${item.id}" class="pull-right" style="margin-left: 10px;"><i class="fa fa-trash"></i></a>
-									<a title="Move to In Progress" id="editLinkButton" th:href="@{/moveToInProgressFromDone/} + ${item.id}" class="pull-right" style="margin-left: 10px;"><i class="fa fa-arrow-left"></i></a>
+									<a onClick="return confirm('Are you want to delete this item?')" title="Delete" id="editLinkButton" th:href="@{/deleteItem/} + ${item.id}" class="pull-right" style="margin-left: 10px;"><i class="fa fa-trash"></i></a> <a title="Move to In Progress" id="editLinkButton" th:href="@{/moveToInProgressFromDone/} + ${item.id}" class="pull-right" style="margin-left: 10px;"><i class="fa fa-arrow-left"></i></a>
 									<p style="margin: 0;" th:text="${{item.des}}"></p>
 								</div>
 							</div>
@@ -137,11 +132,46 @@
 		function showAddButton() {
 			document.getElementById("itemAddInputField").style = "display : block";
 			document.getElementById("itemAddInputField").style = "margin-bottom : 10px";
-			document.getElementById("itemAddInputField").classList.add('col-md-12');
+			document.getElementById("itemAddInputField").classList
+					.add('col-md-12');
 		}
 		function hideAddButton() {
 			document.getElementById("itemAddInputField").style = "display : none";
 		}
+
+		//************ Drag and drop codes below ***************
+		
+		function allowDrop(ev) {
+		    ev.preventDefault();
+		}
+
+		function drag(ev) {
+		    ev.dataTransfer.setData("html", ev.target.id);
+		    
+		    console.log("ev.target.id= "+ev.target.id);
+		}
+
+		function drop(ev) {
+		    ev.preventDefault();
+		    var data = ev.dataTransfer.getData("html");
+		    ev.target.appendChild(document.getElementById(data));
+		    console.log("data= "+data);
+		    
+		    
+			$.ajax({
+				method : "POST",
+				url : "/save",
+				contentType : "application/json",
+				data : JSON.stringify(objectData),
+				dataType : 'json'
+			}).done(function(msg) {
+				alert("Data Saved: " + msg['firstName']);
+			});
+		});
+	});
+		}		
+
+		//************** Drag and drop codes end here **************
 	</script>
 	<span th:substituteby="commons :: common-js"></span>
 </body>
