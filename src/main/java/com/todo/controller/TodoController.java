@@ -45,8 +45,6 @@ public class TodoController {
 			return "views/index";
 		}
 		todoServices.addItem(todoItem);
-		// model.addAttribute("todoItems", todoServices.getTodoList().size() == 0? null
-		// : todoServices.getTodoList());
 		return "redirect:/";
 	}
 
