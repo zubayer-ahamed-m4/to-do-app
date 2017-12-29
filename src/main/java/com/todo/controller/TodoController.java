@@ -54,6 +54,9 @@ public class TodoController {
 	public String updateTodoItem(@PathVariable("id") long id, Model model) throws TodoException {
 		model.addAttribute("todoItemById", todoServices.getById(id));
 		model.addAttribute("todoItems", todoServices.getTodoList().size() == 0 ? null : todoServices.getTodoList());
+		model.addAttribute("inProgressItems",
+				inProgressServices.getTodoList().size() == 0 ? null : inProgressServices.getTodoList());
+		model.addAttribute("doneItems", doneServices.getTodoList().size() == 0 ? null : doneServices.getTodoList());
 		model.addAttribute("update", "true");
 		model.addAttribute("todoItem", new TodoItem());
 		return "views/index";
